@@ -2,7 +2,6 @@ use std::io::{ Read, Write };
 use std::net::TcpStream;
 use std::thread;
 
-//test commit
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = TcpStream::connect("127.0.0.1:8080")?;
     println!("Connected to server");
