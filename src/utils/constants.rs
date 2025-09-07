@@ -1,0 +1,1 @@
+pub const MAX_CHARS: usize = 1024;

@@ -1,6 +1,7 @@
 use std::io::{ Read, Write };
 use std::net::TcpStream;
 use std::thread;
+use rust_chat::utils::constants;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = TcpStream::connect("127.0.0.1:8080")?;
@@ -10,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Receive and print messages from the server
     let receive_thread = thread::spawn(move || {
-        let mut buffer = [0; 1024];
+        let mut buffer = [0; constants::MAX_CHARS];
         let mut stream = read_stream;
         loop {
             match stream.read(&mut buffer) {
@@ -29,10 +30,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     });
-
+    
     // Send messages to the server
     loop {
-        print!("Enter message: ");
         std::io::stdout().flush().unwrap();
 
         let mut input = String::new();
