@@ -11,14 +11,16 @@ fn handle_connection(mut stream: &TcpStream, sender: Sender<String>) {
                     return;
                 }
 
-                let message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+                let message = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
+                println!("received {}", message);
+
                 if let Err(e) = sender.send(message) {
-                    println!("Failed to send message: {}", e);
+                    eprintln!("Failed to send message: {}", e);
                     return;
                 }
             }
             Err(e) => {
-                println!("Error reading from stream: {}", e);
+                eprintln!("Error reading from stream: {}", e);
             }
         }
     }
@@ -28,13 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("127.0.0.1:8080")?;
     println!("Server is running on 127.0.1:8080");
 
-    let (sender, receiver) = channel::<String>();
-
-    std::thread::spawn(move || {
-        for message in receiver {
-            println!("Received: {}", message);
-        }
-    });
+    let (sender, _) = channel::<String>();
 
     for connection in listener.incoming() {
         match connection {
